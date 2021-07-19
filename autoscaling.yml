@@ -1,0 +1,21 @@
+  myLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties: 
+      LaunchTemplateData: 
+        CreditSpecification: 
+          CpuCredits: Unlimited
+        ImageId: !Ref LatestAmiId
+        InstanceType: t2.micro
+  myASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      MinSize: '0'
+      MaxSize: '1'
+      DesiredCapacity: '1'
+      LaunchTemplate:
+        LaunchTemplateId: !Ref myLaunchTemplate
+        Version: !GetAtt myLaunchTemplate.LatestVersionNumber
+      VPCZoneIdentifier: 
+	Fn::ImportValue: !Sub | 
+		"${VPCStackName}-SUBNET"
+	  
